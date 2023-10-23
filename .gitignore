@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches
+*.cache
+*.log
+
+# Environment
+.env
+.env.*
+
+# Compiled Python files
+*.pyc
+
+# Django migration files
+*.py[cod]
+*.log
+*.pot
+/__pycache__/
+/migrations/
+
+# Static files
+staticfiles/
+!.gitkeep
+
+# Media files
+media/
+
+# Virtual environment
+venv/
