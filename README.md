@@ -65,4 +65,6 @@ Run flower
 celery -A poketasks_project flower --port=5001
 ```
 
-crear token de usuario admin
+(\__/)
+(o^.^)
+z(_(")(")
