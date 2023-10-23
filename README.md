@@ -20,6 +20,10 @@ Docker:
 ```
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
 ```
+## Install requirements
+```
+pip install -r requirements.txt
+```
 
 Run migrations
 ```bash
@@ -27,15 +31,17 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-# Create an admin user
+## Create an admin user
 ```python
 from django.contrib.auth.models import User
 user = User.objects.create_user('admin', password='****password****')
 ```
-# Create admin user token
+## Create admin user token
 ```
 python manage.py drf_create_token admin
 ```
+
+## Enviroments
 Create an **.env** file and set up the project variables you can see an example in **.env.example**
 
 # RUN PROJECT
