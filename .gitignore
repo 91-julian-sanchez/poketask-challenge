@@ -30,3 +30,4 @@ media/
 
 # Virtual environment
 venv/
+db.sqlite3

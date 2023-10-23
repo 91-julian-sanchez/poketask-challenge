@@ -1,26 +1,43 @@
-# REQUISITOS
+Crea una aplicación Django simple llamada "Poketasks". Debe incluir un modelo de datos "Pokemon" que tenga campos como "nombre", "id" , "habilidades" y los que consideres relevantes. Configura una vista que permita a los usuarios listar, buscar y agregar habilidades al pokemon.
+
+
+Crea un api usando django rest framework que permita crear y buscar pokemon usando el api. Genera un swagger para documentar este endpoint. Genera un método de autenticación para estos endpoints
+
+
+Usando Celery crea una tarea que extraiga cada 35 segundos un pokemon aleatorio usando el siguiente api: https://pokeapi.co/ , luego de extraerlo envíalo usando un request http al api que creaste en el paso anterior.
+
+
+Condiciones:
+
+no pueden insertarse pokemon repetidos . si el pokemon ya existe debe descartarse y traer otro. 
+
+
+Luego de que se ejecuta la tarea, usando django signals se debe enviar una notificación al correo indicando cual pokemon se creó mediante la tarea de celery. si la tarea trae un pokemon repetido debe guardarse en un log con sus atributos.
+
+# REQUIREMENTS
+Install and run Rabbitmq
 Docker:
 ```
 docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
 ```
 
-# Crear un usuario admin 
-```python
-from django.contrib.auth.models import User
-
-# Crear un nuevo usuario
-user = User.objects.create_user('admin', password='****password****')
-```
-# crear token de usuario admin
-```
-python manage.py drf_create_token admin
-```
-
-# migrations commands
+Run migrations
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
+
+# Create an admin user
+```python
+from django.contrib.auth.models import User
+user = User.objects.create_user('admin', password='****password****')
+```
+# Create admin user token
+```
+python manage.py drf_create_token admin
+```
+Create an **.env** file and set up the project variables you can see an example in **.env.example**
+
 # RUN PROJECT
 ## run server
 ```bash
@@ -49,4 +66,3 @@ celery -A poketasks_project flower --port=5001
 ```
 
 crear token de usuario admin
-python manage.py drf_create_token admin

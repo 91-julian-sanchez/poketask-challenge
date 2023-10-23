@@ -2,18 +2,23 @@ import requests
 from celery import shared_task
 from time import sleep
 import random
+import os
+from dotenv import load_dotenv
 
-BASE_URL = 'http://localhost:8000/poketasks/pokemons/'
-POKEMON_API_URL = 'https://pokeapi.co/api/v2/pokemon/'
-ADMIN_TOKEN = "28b2ef74ce819726fe7586b94af5360115dee3fa"
-MAX_RETRIES = 5  # Número máximo de reintentos permitidos
+load_dotenv()
+
+BASE_URL = os.getenv('BASE_URL')
+POKEMON_API_URL = os.getenv('POKEMON_API_URL')
+ADMIN_TOKEN = os.getenv('ADMIN_TOKEN')
+MAX_RETRIES = int(os.getenv('MAX_RETRIES'))
+CELERY_SLEEP= int(os.getenv('CELERY_SLEEP'))
 
 # Function to fetch Pokemon data from the external API
 def fetch_pokemon(pokemon_id):
     """
     Fetches Pokemon data from the external API.
     """
-    url = f'{POKEMON_API_URL}{pokemon_id}'
+    url = f'{POKEMON_API_URL}/pokemon/{pokemon_id}'
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -44,7 +49,7 @@ def request_create_pokemon(pokemon_data):
             'Authorization': f'token {ADMIN_TOKEN}'
         }
 
-        response = requests.post(BASE_URL, json=pokemon_data, headers=headers)
+        response = requests.post(f"{BASE_URL}/pokemons/", json=pokemon_data, headers=headers)
         return response
     except Exception as e:
         print(f'Error while sending data to the API: {e}', e)
@@ -70,13 +75,6 @@ def create_pokemon(pokemon_data, retries=0):
         return response_data
     elif response.status_code == 400 and response_data.get("error") == 'DUP_ENTRY':
         print("Duplicate Pokemon", response_data.get('existing_pokemon'))
-        # Circuit breaker - Trying a limited number of retries
-        # while retries < MAX_RETRIES:
-        #     new_pokemon_data = fetch_pokemon(random.randint(1, 3))
-        #     if new_pokemon_data and new_pokemon_data.get('id') != pokemon_data.get('id'):
-        #         create_pokemon(new_pokemon_data, retries + 1)
-        #         break
-        #     retries += 1
     else:
         print(f"Failed to create the Pokemon. Status code: {response.status_code }")
 
@@ -88,12 +86,11 @@ def fetch_and_create_pokemon():
     """
     Main function to fetch and create Pokemon periodically.
     """
-    # while True:
     try:
-        pokemon_data = fetch_pokemon(random.randint(1, 15))
+        pokemon_data = fetch_pokemon(random.randint(1, 150))
         if pokemon_data:
             return create_pokemon(pokemon_data)
     except Exception as e:
         print(f'Unexpected error: {e}')
-    sleep(10)
+    sleep(CELERY_SLEEP)
     return None
