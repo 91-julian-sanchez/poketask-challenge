@@ -70,7 +70,44 @@ Run flower
 ```bash
 celery -A poketasks_project flower --port=5001
 ```
+### Create pokemon
+```curl
+curl --location '{BASE_URL}/poketasks/pokemons/' \
+--header 'Authorization: token {AUTH_TOKEN}' \
+--header 'Content-Type: application/json' \
+--data '{
+    "name": "{POKEMON_NAME}",
+    "id": {POKEMON_ID},
+    "skills": "{POKEMON_SKILLS}"
+}'
+```
+### Get pokemon
+```curl
+curl --location '{BASE_URL}/poketasks/pokemons/{POKEMON_ID}/' \
+--header 'Authorization: token {AUTH_TOKEN}'
+```
 
-(\__/)
-(o^.^)
+### Add pokemon skills
+```curl
+curl --location '{BASE_URL}/poketasks/pokemons/{POKEMON_ID}/add_skill/' \
+--header 'Authorization: token {AUTH_TOKEN}' \
+--header 'Content-Type: application/json' \
+--data '{
+    "new_skill": "{SKILLS}"
+}'
+```
+
+### Get all pokemons
+```curl
+curl --location '{BASE_URL}/poketasks/pokemons/' \
+--header 'Authorization: token {AUTH_TOKEN}'
+```
+
+## API docs
+see {BASE_URL}/swagger/ or {BASE_URL}/redoc/ 
+
+```
+ (\__/)
+  (o^.^)
 z(_(")(")
+```
