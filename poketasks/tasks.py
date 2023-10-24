@@ -64,7 +64,7 @@ def create_pokemon(pokemon_data, retries=0):
     abilities = extract_abilities(pokemon_data)
     response = request_create_pokemon({
         "name": pokemon_data.get("name"),
-        "pokemon_id": pokemon_data.get("id"),
+        "id": pokemon_data.get("id"),
         "skills": abilities
     })
 

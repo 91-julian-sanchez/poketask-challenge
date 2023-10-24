@@ -7,38 +7,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-# API endpoint to list all Pokemon
-class ListPokemon(APIView):
-    """
-    API endpoint to list all Pokemon.
-    """
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        """
-        GET request to retrieve all Pokemon.
-        """
-        pokemons = Pokemon.objects.all()
-        serializer = PokemonSerializer(pokemons, many=True)
-        return Response(serializer.data)
-
-# API endpoint to search for a specific Pokemon
-class SearchPokemon(APIView):
-    """
-    API endpoint to search for a specific Pokemon by ID.
-    """
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, pokemon_id):
-        """
-        GET request to retrieve a specific Pokemon by ID.
-        """
-        pokemon = Pokemon.objects.filter(pokemon_id=pokemon_id).first()
-        if not pokemon:
-            return Response({"message": "Pokemon not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = PokemonSerializer(pokemon)
-        return Response(serializer.data)
-
 # API endpoint to add a skill to a specific Pokemon
 class AddSkill(APIView):
     """
@@ -46,18 +14,20 @@ class AddSkill(APIView):
     """
     permission_classes = (IsAuthenticated,)
 
-    def post(self, request, pokemon_id):
+    def post(self, request, id):
         """
         POST request to add a skill to a specific Pokemon by ID.
         """
-        pokemon = Pokemon.objects.filter(pokemon_id=pokemon_id).first()
+        print(request)
+        pokemon = Pokemon.objects.filter(id=id).first()
         if not pokemon:
             return Response({"message": "Pokemon not found"}, status=status.HTTP_404_NOT_FOUND)
 
         new_skill = request.data.get('new_skill', '')
         pokemon.skills += ", " + new_skill
         pokemon.save()
-        return Response({"message": "Skill added successfully"})
+        serializer = PokemonSerializer(pokemon)  
+        return Response({"message": "Skill added successfully", "data":serializer.data})
 
 # ViewSet for managing Pokemon data
 class PokemonViewSet(viewsets.ModelViewSet):
@@ -73,8 +43,8 @@ class PokemonViewSet(viewsets.ModelViewSet):
         Create a new Pokemon or return an error if a Pokemon with the same ID already exists.
         """
         try:
-            pokemon_id = request.data.get('pokemon_id')
-            existing_pokemon = Pokemon.objects.filter(pokemon_id=pokemon_id).first()
+            id = request.data.get('id')
+            existing_pokemon = Pokemon.objects.filter(id=id).first()
             if existing_pokemon:
                 print("The Pokemon already exists")
                 return Response(
@@ -83,7 +53,7 @@ class PokemonViewSet(viewsets.ModelViewSet):
                         "message": "A Pokemon with the same ID already exists",
                         "existing_pokemon": {
                             "name": existing_pokemon.name,
-                            "pokemon_id": existing_pokemon.pokemon_id,
+                            "id": existing_pokemon.id,
                             "skills": existing_pokemon.skills
                         }
                     },

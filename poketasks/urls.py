@@ -4,12 +4,11 @@ from . import views
 
 # Define API routes and views
 router = DefaultRouter()
-router.register(r'pokemons', views.PokemonViewSet)
+router.register(r'pokemons', views.PokemonViewSet, basename='pokemon')
 
 # Define routes for function-based views
+
 urlpatterns = [
     path('', include(router.urls)),
-    path('list/', views.ListPokemon.as_view(), name='list_pokemon'),
-    path('search/<int:pokemon_id>/', views.SearchPokemon.as_view(), name='search_pokemon'),
-    path('add_skill/<int:pokemon_id>/', views.AddSkill.as_view(), name='add_skill'),
+    path('pokemons/<int:id>/add_skill/', views.AddSkill.as_view(), name='add_skill'),
 ]
